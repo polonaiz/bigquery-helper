@@ -4,7 +4,7 @@
 namespace BigqueryHelperCli;
 
 use BigqueryHelperCli\Command\Command;
-use BigqueryHelperCli\Command\ExportCommand;
+use BigqueryHelperCli\Command\ExportDatasetInfoCommand;
 use Phalcon\Cop\Parser;
 use ScratchPad\Exception\Exception;
 use ScratchPad\Logger\CompositeLogger;
@@ -38,6 +38,8 @@ class Main
 					'message' => $t->getMessage(),
 					'trace' => Throwable::getTraceSafe($t),
 				], JSON_PRETTY_PRINT) . PHP_EOL;
+
+			throw $t;
 		}
 	}
 
@@ -48,9 +50,9 @@ class Main
 	 */
 	public static function createCommand($cliParams)
 	{
-		if ($cliParams[0] === 'export')
+		if ($cliParams[0] === 'export-dataset-info')
 		{
-			return new ExportCommand(['cliParams' => $cliParams]);
+			return new ExportDatasetInfoCommand(['cliParams' => $cliParams]);
 		}
 
 		throw new \Exception("cannot create cli command");
@@ -76,7 +78,7 @@ class Main
 				'loggerFilterPairs' =>
 					[
 						[
-							'logger' => new ConsoleLogger(),
+							'logger' => new ConsoleLogger(['appendNewLine' => 1]),
 							'filter' => CompositeLogger::getSelectorAll()
 						],
 					]
