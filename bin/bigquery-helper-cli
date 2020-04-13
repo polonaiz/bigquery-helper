@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+
+<?php
+
+use \BigqueryHelperCli\Main;
+
+require_once __DIR__ . "/../vendor/autoload.php";
+
+/** @noinspection PhpUnhandledExceptionInspection */
+Main::main();

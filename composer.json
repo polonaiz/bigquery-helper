@@ -10,7 +10,9 @@
 	"require": {
 		"php": "7.4.*",
 		"ext-json": "*",
-		"google/cloud-bigquery": "*"
+		"google/cloud-bigquery": "*",
+		"phalcon/cli-options-parser": "1.2.*",
+		"polonaiz/scratch-pad": "0.0.*"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "9.*"

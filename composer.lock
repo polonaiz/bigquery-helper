@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bde466e22742ff9cde53048377b8d4ee",
+    "content-hash": "4aded714cbb4dcb0fcfbd9312e695906",
     "packages": [
         {
             "name": "brick/math",
@@ -533,6 +533,150 @@
                 "psr-3"
             ],
             "time": "2019-12-20T14:22:59+00:00"
+        },
+        {
+            "name": "phalcon/cli-options-parser",
+            "version": "v1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phalcon/cli-options-parser.git",
+                "reference": "9487c84fb320c6b6882c76d4388d039316d234b9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phalcon/cli-options-parser/zipball/9487c84fb320c6b6882c76d4388d039316d234b9",
+                "reference": "9487c84fb320c6b6882c76d4388d039316d234b9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0 <8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=5.3 <8.0",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Phalcon\\Cop\\": "src/"
+                }
+            },
+            "notification-url": "https://repo.packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Phalcon Team",
+                    "email": "team@phalconphp.com",
+                    "homepage": "https://phalconphp.com/en/team"
+                },
+                {
+                    "name": "Contributors",
+                    "homepage": "https://github.com/phalcon/cli-options-parser/graphs/contributors"
+                }
+            ],
+            "description": "Command line arguments/options parser.",
+            "homepage": "https://phalconphp.com",
+            "keywords": [
+                "argparse",
+                "cli",
+                "command",
+                "command-line",
+                "getopt",
+                "line",
+                "option",
+                "optparse",
+                "parser",
+                "terminal"
+            ],
+            "funding": [
+                {
+                    "url": "https://github.com/phalcon",
+                    "type": "github"
+                },
+                {
+                    "url": "https://opencollective.com/phalcon",
+                    "type": "open_collective"
+                }
+            ],
+            "time": "2020-03-14T18:48:08+00:00"
+        },
+        {
+            "name": "polonaiz/scratch-pad",
+            "version": "0.0.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/polonaiz/scratch-pad.git",
+                "reference": "fca09dd11a0fc7f73a76b7de097744b81b7144c4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/polonaiz/scratch-pad/zipball/fca09dd11a0fc7f73a76b7de097744b81b7144c4",
+                "reference": "fca09dd11a0fc7f73a76b7de097744b81b7144c4",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">=7.2.0",
+                "polonaiz/scribe": "0.0.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "8.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ScratchPad\\": [
+                        "src/ScratchPad",
+                        "test/ScratchPad"
+                    ]
+                }
+            },
+            "notification-url": "https://repo.packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "polonaiz",
+                    "email": "polonaiz@gmail.com"
+                }
+            ],
+            "time": "2020-01-29T09:24:57+00:00"
+        },
+        {
+            "name": "polonaiz/scribe",
+            "version": "0.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/polonaiz/scribe.git",
+                "reference": "15716a1da094d060fd6fd69fd7abcb1fba08ab2e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/polonaiz/scribe/zipball/15716a1da094d060fd6fd69fd7abcb1fba08ab2e",
+                "reference": "15716a1da094d060fd6fd69fd7abcb1fba08ab2e",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Thrift\\": "src/Thrift",
+                    "Scribe\\": "src/Thrift/Packages/Scribe"
+                }
+            },
+            "notification-url": "https://repo.packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "polonaiz",
+                    "email": "polonaiz@gmail.com"
+                }
+            ],
+            "time": "2019-06-17T12:50:47+00:00"
         },
         {
             "name": "psr/cache",
