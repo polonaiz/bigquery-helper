@@ -16,11 +16,13 @@ runtime-bash:
 composer-install-using-runtime:
 	docker run --rm -it \
 		-v $(shell pwd):/opt/project \
+		-v ~/.composer:/root/.composer \
  		${RUNTIME_TAG} composer -vvv install -d /opt/project
 
 composer-update-using-runtime:
 	docker run --rm -it \
 		-v $(shell pwd):/opt/project \
+		-v ~/.composer:/root/.composer \
  		${RUNTIME_TAG} composer -vvv update -d /opt/project
 
 composer-clean:
