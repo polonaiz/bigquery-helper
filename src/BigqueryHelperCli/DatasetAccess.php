@@ -29,9 +29,24 @@ class DatasetAccess
 	public function revokeAccess($entry)
 	{
 		$data = [];
-		foreach ($this->data as $idx => $datum)
+		foreach ($this->data as $datum)
 		{
 			if (\json_encode($datum) === \json_encode($entry))
+			{
+				continue;
+			}
+			$data[] = $datum;
+		}
+		$this->data = $data;
+		return $this;
+	}
+
+	public function revokeSpecialGroup()
+	{
+		$data = [];
+		foreach ($this->data as $datum)
+		{
+			if(isset($datum['specialGroup']))
 			{
 				continue;
 			}

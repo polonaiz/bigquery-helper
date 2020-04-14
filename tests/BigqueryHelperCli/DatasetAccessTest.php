@@ -79,5 +79,14 @@ class DatasetAccessTest extends TestCase
 			JSON, true), JSON_PRETTY_PRINT),
 			\json_encode($datasetAccess->toArray(), JSON_PRETTY_PRINT)
 		);
+
+		$datasetAccess->revokeSpecialGroup();
+		$this->assertEquals(\json_encode(\json_decode(<<<JSON
+			[
+				{"role": "READER","userByEmail": "tester-002@gmail.com"}
+			]
+			JSON, true), JSON_PRETTY_PRINT),
+			\json_encode($datasetAccess->toArray(), JSON_PRETTY_PRINT)
+		);
 	}
 }

@@ -3,8 +3,7 @@
 
 namespace BigqueryHelperCli;
 
-use BigqueryHelperCli\Command\Command;
-use BigqueryHelperCli\Command\ExportDatasetInfoCommand;
+use BigqueryHelperCli\Command\CommandFactory;
 use Phalcon\Cop\Parser;
 use ScratchPad\Exception\Exception;
 use ScratchPad\Logger\CompositeLogger;
@@ -27,8 +26,8 @@ class Main
 			global $argv;
 			$cliParser = new Parser();
 			$cliParams = $cliParser->parse($argv);
-			$command = self::createCommand($cliParams);
-			$command->run();
+
+			CommandFactory::createCommand($cliParams)->run();
 			return;
 		}
 		catch (\Throwable $t)
@@ -41,21 +40,6 @@ class Main
 
 			throw $t;
 		}
-	}
-
-	/**
-	 * @param $cliParams
-	 * @return Command
-	 * @throws \Throwable
-	 */
-	public static function createCommand($cliParams)
-	{
-		if ($cliParams[0] === 'export-dataset-info')
-		{
-			return new ExportDatasetInfoCommand(['cliParams' => $cliParams]);
-		}
-
-		throw new \Exception("cannot create cli command");
 	}
 
 	public static function env()
