@@ -1,0 +1,11 @@
+[
+	{
+		"datasetId": "DATASET_1",
+		"access": [
+			{
+				"role": "READER",
+				"userByEmail": "tester-001@gmail.com"
+			}
+		]
+	}
+]
