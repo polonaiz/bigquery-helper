@@ -7,25 +7,44 @@ class ConfigExpansionTest extends TestCase
 {
 	public function testConfiguration()
 	{
-		$configuration = \json_decode(\file_get_contents(
-			__DIR__ . "/Asset/AccessControl/sample1-given-access-configs.json"
-		), true);
-		$datasetIdList = \json_decode(\file_get_contents(
-			__DIR__ . "/Asset/AccessControl/sample1-given-dataset-id-list.json"
-		), true);
+		$accessControlConfiguration =
+			\json_decode(\file_get_contents(
+				__DIR__ . "/Asset/AccessControl/sample1-givenAccessControlConfiguration.json"
+			), true);
+		$datasetIds =
+			\json_decode(\file_get_contents(
+				__DIR__ . "/Asset/AccessControl/sample1-givenDatasetIds.json"
+			), true);
 
+		$result =
+			$this->expandConfig($accessControlConfiguration, $datasetIds);
+
+		$this->assertEquals(
+			\json_encode(\json_decode(\file_get_contents(
+				__DIR__ . "/Asset/AccessControl/sample1-expectedAccessControl.json"), true), JSON_PRETTY_PRINT),
+			\json_encode(
+				$result, JSON_PRETTY_PRINT));
+	}
+
+	/**
+	 * @param $accessControlConfiguration array
+	 * @param $datasetIds array
+	 * @return array
+	 */
+	public function expandConfig($accessControlConfiguration, $datasetIds)
+	{
 		// build group dictionary
 		$groupDict = [];
-		foreach ($configuration['groups'] as $group)
+		foreach ($accessControlConfiguration['groups'] as $group)
 		{
 			$groupDict[$group['groupId']] = $group;
 		}
 
 		// expand dataset access config
 		$datasetAccessDict = [];
-		foreach ($configuration['datasetAccessConfigList'] as $datasetAccessConfig)
+		foreach ($accessControlConfiguration['datasetAccessConfigList'] as $datasetAccessConfig)
 		{
-			foreach ($datasetIdList as $datasetId)
+			foreach ($datasetIds as $datasetId)
 			{
 				$result = \preg_match($datasetAccessConfig['datasetIdPattern'], $datasetId);
 				if ($result === false || $result === 0)
@@ -51,10 +70,6 @@ class ConfigExpansionTest extends TestCase
 			}
 		}
 
-		$this->assertEquals(
-			\json_encode(\json_decode(\file_get_contents(
-				__DIR__ . "/Asset/AccessControl/sample1-expected-dataset-access.json"), true), JSON_PRETTY_PRINT),
-			\json_encode(\array_values($datasetAccessDict), JSON_PRETTY_PRINT)
-		);
+		return \array_values($datasetAccessDict);
 	}
 }

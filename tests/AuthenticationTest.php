@@ -17,7 +17,7 @@ class AuthenticationTest extends TestCase
 		return \getenv('BIGQUERY_HELPER_KEY_FILE_PATH');
 	}
 
-	public function testDiscoverDefaultCredential()
+	public function testObtainDefaultCredential()
 	{
 		$projectId = $this->getDefaultProjectId();
 		$this->assertNotFalse($projectId);
@@ -30,7 +30,7 @@ class AuthenticationTest extends TestCase
 	/**
 	 * @throws Exception
 	 */
-	public function testPermission()
+	public function testPermissionChangeUsingBigqueryApi()
 	{
 		$serviceBuilder = new ServiceBuilder([
 			'keyFilePath' => $this->getDefaultKeyFilePath(),
@@ -48,40 +48,29 @@ class AuthenticationTest extends TestCase
 		// test dataset creation
 		$bigquery->createDataset($datasetId);
 
-		// test dataset info
-		$datasetInfo = $bigquery->dataset($datasetId)->info();
-		$this->assertEquals($datasetId, $datasetInfo['datasetReference']['datasetId']);
-		echo \json_encode($datasetInfo, JSON_PRETTY_PRINT) . PHP_EOL;
-
 		// grant
-		$grantMetaData =
-			[
-				'etag' => $datasetInfo['etag'],
-				'access' => (new DatasetAccess($datasetInfo['access']))
-					->grantAccess(["role" => "WRITER", "userByEmail" => $testAccount])
-					->toArray()
-			];
-		echo \json_encode(['grantMetaData' => $grantMetaData], JSON_PRETTY_PRINT) . PHP_EOL;
-		$updatedDatasetInfo = $bigquery->dataset($datasetId)->update($grantMetaData);
-		echo \json_encode(['grantUpdateResult' => $updatedDatasetInfo], JSON_PRETTY_PRINT) . PHP_EOL;
+		$currentDatasetInfo = $bigquery->dataset($datasetId)->info();
+		$grantUpdateResult = $bigquery->dataset($datasetId)->update($grantMetaData = [
+			'etag' => $currentDatasetInfo['etag'],
+			'access' => (new DatasetAccess($currentDatasetInfo['access']))
+				->grantAccess(["role" => "WRITER", "userByEmail" => $testAccount])
+				->toArray()
+		]);
+		echo \json_encode(['grantUpdateResult' => $grantUpdateResult], JSON_PRETTY_PRINT) . PHP_EOL;
 
 		// revoke
-		$reloadedDatasetInfo = $bigquery->dataset($datasetId)->info();
-		echo \json_encode(['reloadedDatasetInfo' => $reloadedDatasetInfo]) . PHP_EOL;
-		$revokeMetaData =
-			[
-				'etag' => $reloadedDatasetInfo['etag'],
-				'access' => (new DatasetAccess($reloadedDatasetInfo['access']))
-					->revokeAccess(["role" => "WRITER", "userByEmail" => $testAccount])
-					->toArray()
-			];
-		echo \json_encode(['revokeMetaData' => $revokeMetaData], JSON_PRETTY_PRINT) . PHP_EOL;
-		$revokedDatasetInfo = $bigquery->dataset($datasetId)->update($revokeMetaData);
-		echo \json_encode(['revokedDatasetInfo' => $revokedDatasetInfo], JSON_PRETTY_PRINT) . PHP_EOL;
+		$currentDatasetInfo = $bigquery->dataset($datasetId)->info();
+		$revokeUpdateResult = $bigquery->dataset($datasetId)->update($revokeMetaData = [
+			'etag' => $currentDatasetInfo['etag'],
+			'access' => (new DatasetAccess($currentDatasetInfo['access']))
+				->revokeAccess(["role" => "WRITER", "userByEmail" => $testAccount])
+				->toArray()
+		]);
+		echo \json_encode(['revokeUpdateResult' => $revokeUpdateResult], JSON_PRETTY_PRINT) . PHP_EOL;
 
 		// final state
-		$reloadedDatasetInfo = $bigquery->dataset($datasetId)->info();
-		echo \json_encode(['reloadedDatasetInfo' => $reloadedDatasetInfo], JSON_PRETTY_PRINT) . PHP_EOL;
+		$currentDatasetInfo = $bigquery->dataset($datasetId)->info();
+		echo \json_encode(['currentDatasetInfo' => $currentDatasetInfo], JSON_PRETTY_PRINT) . PHP_EOL;
 
 		// test dataset deletion
 		$bigquery->dataset($datasetId)->delete();
