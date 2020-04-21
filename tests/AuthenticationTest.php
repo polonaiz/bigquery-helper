@@ -53,7 +53,7 @@ class AuthenticationTest extends TestCase
 		$grantUpdateResult = $bigquery->dataset($datasetId)->update($grantMetaData = [
 			'etag' => $currentDatasetInfo['etag'],
 			'access' => (new DatasetAccess($currentDatasetInfo['access']))
-				->grantAccess(["role" => "WRITER", "userByEmail" => $testAccount])
+				->includeAccess(["role" => "WRITER", "userByEmail" => $testAccount])
 				->toArray()
 		]);
 		echo \json_encode(['grantUpdateResult' => $grantUpdateResult], JSON_PRETTY_PRINT) . PHP_EOL;
@@ -63,7 +63,7 @@ class AuthenticationTest extends TestCase
 		$revokeUpdateResult = $bigquery->dataset($datasetId)->update($revokeMetaData = [
 			'etag' => $currentDatasetInfo['etag'],
 			'access' => (new DatasetAccess($currentDatasetInfo['access']))
-				->revokeAccess(["role" => "WRITER", "userByEmail" => $testAccount])
+				->excludeAccess(["role" => "WRITER", "userByEmail" => $testAccount])
 				->toArray()
 		]);
 		echo \json_encode(['revokeUpdateResult' => $revokeUpdateResult], JSON_PRETTY_PRINT) . PHP_EOL;

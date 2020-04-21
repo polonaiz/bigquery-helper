@@ -21,7 +21,7 @@ class DatasetAccessTest extends TestCase
 			JSON, true
 		));
 
-		$datasetAccess->grantAccess([
+		$datasetAccess->includeAccess([
 			'role' => 'WRITER', 'userByEmail' => 'tester-001@gmail.com'
 		]);
 
@@ -36,7 +36,7 @@ class DatasetAccessTest extends TestCase
 			\json_encode($datasetAccess->toArray())
 		);
 
-		$datasetAccess->grantAccess([
+		$datasetAccess->includeAccess([
 			'role' => 'READER', 'userByEmail' => 'tester-002@gmail.com'
 		]);
 
@@ -52,7 +52,7 @@ class DatasetAccessTest extends TestCase
 			\json_encode($datasetAccess->toArray())
 		);
 
-		$datasetAccess->revokeAccess([
+		$datasetAccess->excludeAccess([
 			'role' => 'WRITER', 'userByEmail' => 'tester-001@gmail.com'
 		]);
 
@@ -67,7 +67,7 @@ class DatasetAccessTest extends TestCase
 			\json_encode($datasetAccess->toArray(), JSON_PRETTY_PRINT)
 		);
 
-		$datasetAccess->revokeAccess([
+		$datasetAccess->excludeAccess([
 			'role' => 'WRITER', 'specialGroup' => 'projectWriters'
 		]);
 		$this->assertEquals(\json_encode(\json_decode(<<<JSON
@@ -80,7 +80,7 @@ class DatasetAccessTest extends TestCase
 			\json_encode($datasetAccess->toArray(), JSON_PRETTY_PRINT)
 		);
 
-		$datasetAccess->revokeSpecialGroup();
+		$datasetAccess->excludeSpecialGroup();
 		$this->assertEquals(\json_encode(\json_decode(<<<JSON
 			[
 				{"role": "READER","userByEmail": "tester-002@gmail.com"}

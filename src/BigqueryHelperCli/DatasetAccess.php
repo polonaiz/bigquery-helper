@@ -20,13 +20,13 @@ class DatasetAccess
 	 * @return DatasetAccess
 	 * @throws \Exception
 	 */
-	public function grantAccess($entry)
+	public function includeAccess($entry)
 	{
 		$this->data[] = $entry;
 		return $this;
 	}
 
-	public function revokeAccess($entry)
+	public function excludeAccess($entry)
 	{
 		$data = [];
 		foreach ($this->data as $datum)
@@ -41,7 +41,7 @@ class DatasetAccess
 		return $this;
 	}
 
-	public function revokeSpecialGroup()
+	public function excludeSpecialGroup()
 	{
 		$data = [];
 		foreach ($this->data as $datum)

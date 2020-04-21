@@ -7,6 +7,7 @@ namespace BigqueryHelperCli\Command;
 use BigqueryHelperCli\DatasetAccess;
 use Google\Cloud\BigQuery\Dataset;
 use Google\Cloud\Core\ServiceBuilder;
+use jDelta\PrettyJson;
 
 class ExportDatasetAccessCommand implements Command
 {
@@ -24,6 +25,7 @@ class ExportDatasetAccessCommand implements Command
 	{
 		$projectId = \getenv('BIGQUERY_HELPER_KEY_PROJECT_ID');
 		$keyFilePath = \getenv('BIGQUERY_HELPER_KEY_FILE_PATH');
+		$outputFilePath = $this->config['cliParams']['output'] ?? 'php://stdout';
 
 		$serviceBuilder = new ServiceBuilder([
 			'projectId' => $projectId,
@@ -31,6 +33,7 @@ class ExportDatasetAccessCommand implements Command
 		]);
 		$bigquery = $serviceBuilder->bigQuery();
 		$datasetIterator = $bigquery->datasets();
+		$datasetAccessList = [];
 		foreach ($datasetIterator as $datasetRef)
 		{
 			/** @var Dataset $datasetRef */
@@ -38,10 +41,16 @@ class ExportDatasetAccessCommand implements Command
 			$datasetId = $datasetRefInfo['datasetReference']['datasetId'];
 
 			$datasetInfo = $bigquery->dataset($datasetId)->info();
-			echo \json_encode([
+			$datasetAccess = (new DatasetAccess($datasetInfo['access']))
+				->toArray();
+			$datasetAccessList[] = [
 				'datasetId' => $datasetInfo['datasetReference']['datasetId'],
-				'access' => (new DatasetAccess($datasetInfo['access']))->toArray()
-			]), PHP_EOL, PHP_EOL;
+				'access' => $datasetAccess
+			];
 		}
+
+		\file_put_contents(
+			$outputFilePath,
+			PrettyJson::getPrettyPrint(\json_encode($datasetAccessList)));
 	}
 }
