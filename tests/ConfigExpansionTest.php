@@ -49,41 +49,45 @@ class ConfigExpansionTest extends TestCase
 		}
 
 		// expand dataset access config
-		$datasetAccessDict = [];
-		foreach ($accessControlConfiguration['datasetAccessConfigList'] as $datasetAccessConfig)
+		$datasetAccessList = [];
+		foreach ($datasetIds as $datasetId)
 		{
-			foreach ($datasetIds as $datasetId)
-			{
-				$result = \preg_match($datasetAccessConfig['datasetIdPattern'], $datasetId);
-				if ($result === false || $result === 0)
-				{
-					continue;
-				}
-
-				if (!isset($datasetAccessDict[$datasetId]))
-				{
-					$datasetAccessDict[$datasetId] = [
-						'datasetId' => $datasetId,
-						'access' => []
-					];
-				}
-
-				foreach ($datasetAccessConfig['access'] as $accessEntry)
-				{
-					foreach ($groupDict[$accessEntry['groupId']]['members'] as $member)
-					{
-						$datasetAccessDict[$datasetId]['access'][] = ['role' => $accessEntry['role']] + $member;
-					}
-				}
-				unset($accessEntry);
-
-				(new ArrayHandler($datasetAccessDict[$datasetId]['access']))
-					->sort([$this, 'accessEntryComparator'])
-					->uniq([$this, 'accessEntryComparator']);
-			}
+			$datasetAccessList[] = [
+				'datasetId' => $datasetId,
+				'access' => $this->expandDatasetAccess(
+					$datasetId,
+					$accessControlConfiguration['datasetAccessConfigList'],
+					$groupDict)];
 		}
 
-		return \array_values($datasetAccessDict);
+		return $datasetAccessList;
+	}
+
+	private function expandDatasetAccess($datasetId, $datasetAccessConfigList, $groupDict)
+	{
+		$result = [];
+		foreach ($datasetAccessConfigList as $datasetAccessConfig)
+		{
+			$matched = \preg_match($datasetAccessConfig['datasetIdPattern'], $datasetId);
+			if ($matched === false || $matched === 0)
+			{
+				continue;
+			}
+
+			foreach ($datasetAccessConfig['access'] as $accessEntry)
+			{
+				foreach ($groupDict[$accessEntry['groupId']]['members'] as $member)
+				{
+					$result[] = ['role' => $accessEntry['role']] + $member;
+				}
+			}
+			unset($accessEntry);
+
+			(new ArrayHandler($result))
+				->sort([$this, 'accessEntryComparator'])
+				->uniq([$this, 'accessEntryComparator']);
+		}
+		return $result;
 	}
 
 	public function accessEntryComparator($accessEntry1, $accessEntry2)
