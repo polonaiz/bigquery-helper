@@ -1,0 +1,57 @@
+{
+	"datasetAccessConfigList": [
+		{
+			"datasetIdPattern": "/^DATASET_A_.+$/",
+			"access": [
+				{"role": "READER", "groupId": "group-1"},
+				{"role": "READER", "groupId": "group-2"}
+			]
+		},
+		{
+			"datasetIdPattern": "/^DATASET_B_.+$/",
+			"access": [
+				{"role": "READER", "groupId": "group-2"},
+				{"role": "READER", "groupId": "group-3"},
+				{"role": "READER", "groupId": "group-4"},
+				{"role": "READER", "groupId": "group-5"}
+			]
+		}
+	],
+	"groups": [
+		{
+			"groupId": "group-1",
+			"members": [
+				{"userByEmail": "tester-001@gmail.com"},
+				{"userByEmail": "tester-002@gmail.com"}
+			]
+		},
+		{
+			"groupId": "group-2",
+			"members": [
+				{"userByEmail": "tester-003@gmail.com"},
+				{"userByEmail": "tester-004@gmail.com"}
+			]
+		},
+		{
+			"groupId": "group-3",
+			"members": [
+				{"userByEmail": "tester-004@gmail.com"},
+				{"userByEmail": "tester-005@gmail.com"}
+			]
+		},
+		{
+			"groupId": "group-4",
+			"members": [
+				{"userByEmail": "tester-005@gmail.com"},
+				{"userByEmail": "tester-006@gmail.com"}
+			]
+		},
+		{
+			"groupId": "group-5",
+			"members": [
+				{"userByEmail": "tester-006@gmail.com"},
+				{"userByEmail": "tester-003@gmail.com"}
+			]
+		}
+	]
+}

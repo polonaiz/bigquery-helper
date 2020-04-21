@@ -1,0 +1,19 @@
+{
+	"datasetAccessConfigList": [
+		{
+			"datasetIdPattern": "/^DATASET_A_.+$/",
+			"access": [
+				{"role": "READER", "groupId": "group-1"}
+			]
+		}
+	],
+	"groups": [
+		{
+			"groupId": "group-1",
+			"members": [
+				{"userByEmail": "tester-001@gmail.com"},
+				{"userByEmail": "tester-002@gmail.com"}
+			]
+		}
+	]
+}

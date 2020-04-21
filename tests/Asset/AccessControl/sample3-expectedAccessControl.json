@@ -1,0 +1,29 @@
+[
+	{
+		"datasetId": "DATASET_A_1",
+		"access": [
+			{"role": "READER", "userByEmail": "tester-001@gmail.com"},
+			{"role": "READER", "userByEmail": "tester-002@gmail.com"},
+			{"role": "READER", "userByEmail": "tester-003@gmail.com"},
+			{"role": "READER", "userByEmail": "tester-004@gmail.com"}
+		]
+	},
+	{
+		"datasetId": "DATASET_A_2",
+		"access": [
+			{"role": "READER", "userByEmail": "tester-001@gmail.com"},
+			{"role": "READER", "userByEmail": "tester-002@gmail.com"},
+			{"role": "READER", "userByEmail": "tester-003@gmail.com"},
+			{"role": "READER", "userByEmail": "tester-004@gmail.com"}
+		]
+	},
+	{
+		"datasetId": "DATASET_B_1",
+		"access": [
+			{"role": "READER", "userByEmail": "tester-003@gmail.com"},
+			{"role": "READER", "userByEmail": "tester-004@gmail.com"},
+			{"role": "READER", "userByEmail": "tester-005@gmail.com"},
+			{"role": "READER", "userByEmail": "tester-006@gmail.com"}
+		]
+	}
+]
