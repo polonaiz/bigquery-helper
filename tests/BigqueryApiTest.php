@@ -5,7 +5,7 @@ use BigqueryHelperCli\DatasetAccess;
 use Google\Cloud\Core\ServiceBuilder;
 use PHPUnit\Framework\TestCase;
 
-class AuthenticationTest extends TestCase
+class BigqueryApiTest extends TestCase
 {
 	private function getDefaultProjectId()
 	{
@@ -32,6 +32,8 @@ class AuthenticationTest extends TestCase
 	 */
 	public function testPermissionChangeUsingBigqueryApi()
 	{
+		$this->markTestSkipped();
+
 		$serviceBuilder = new ServiceBuilder([
 			'keyFilePath' => $this->getDefaultKeyFilePath(),
 		]);

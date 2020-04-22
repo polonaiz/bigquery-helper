@@ -21,6 +21,10 @@ class CommandFactory
 		{
 			return new ExportDatasetAccessCommand(['cliParams' => $cliParams]);
 		}
+		else if($cliParams[0] === 'expect-dataset-access')
+		{
+			return new ExpectDatasetAccessCommand(['cliParams' => $cliParams]);
+		}
 		throw new \Exception("cannot create cli command");
 	}
 }

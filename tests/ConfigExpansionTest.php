@@ -1,6 +1,8 @@
 <?php
 
 
+use BigqueryHelperCli\ArrayHandler;
+use BigqueryHelperCli\DatasetAccess;
 use PHPUnit\Framework\TestCase;
 
 class ConfigExpansionTest extends TestCase
@@ -25,7 +27,7 @@ class ConfigExpansionTest extends TestCase
 			$datasetIds = \json_decode(\file_get_contents($testset['datasetIds']), true);
 
 			$result =
-				$this->expandConfig($accessControlConfiguration, $datasetIds);
+				$this->expandConfig($datasetIds, $accessControlConfiguration);
 
 			$this->assertEquals(
 				\json_encode(\json_decode(\file_get_contents(
@@ -35,64 +37,22 @@ class ConfigExpansionTest extends TestCase
 	}
 
 	/**
-	 * @param $accessControlConfiguration array
 	 * @param $datasetIds array
+	 * @param $accessControlConfiguration array
 	 * @return array
 	 */
-	public function expandConfig($accessControlConfiguration, $datasetIds)
+	public function expandConfig($datasetIds, $accessControlConfiguration)
 	{
-		// build group dictionary
-		$groupDict = [];
-		foreach ($accessControlConfiguration['groups'] as $group)
-		{
-			$groupDict[$group['groupId']] = $group;
-		}
-
-		// expand dataset access config
 		$datasetAccessList = [];
 		foreach ($datasetIds as $datasetId)
 		{
 			$datasetAccessList[] = [
 				'datasetId' => $datasetId,
-				'access' => $this->expandDatasetAccess(
+				'access' => DatasetAccess::expandConfigDataset(
 					$datasetId,
-					$accessControlConfiguration['datasetAccessConfigList'],
-					$groupDict)];
+					$accessControlConfiguration)];
 		}
-
 		return $datasetAccessList;
-	}
-
-	private function expandDatasetAccess($datasetId, $datasetAccessConfigList, $groupDict)
-	{
-		$result = [];
-		foreach ($datasetAccessConfigList as $datasetAccessConfig)
-		{
-			$matched = \preg_match($datasetAccessConfig['datasetIdPattern'], $datasetId);
-			if ($matched === false || $matched === 0)
-			{
-				continue;
-			}
-
-			foreach ($datasetAccessConfig['access'] as $accessEntry)
-			{
-				foreach ($groupDict[$accessEntry['groupId']]['members'] as $member)
-				{
-					$result[] = ['role' => $accessEntry['role']] + $member;
-				}
-			}
-			unset($accessEntry);
-
-			(new ArrayHandler($result))
-				->sort([$this, 'accessEntryComparator'])
-				->uniq([$this, 'accessEntryComparator']);
-		}
-		return $result;
-	}
-
-	public function accessEntryComparator($accessEntry1, $accessEntry2)
-	{
-		return \strcmp(\json_encode($accessEntry1), \json_encode($accessEntry2));
 	}
 
 	public function testArrayUnique()
@@ -110,8 +70,8 @@ class ConfigExpansionTest extends TestCase
 		];
 
 		(new ArrayHandler($data))
-			->sort([$this, 'accessEntryComparator'])
-			->uniq([$this, 'accessEntryComparator']);
+			->sort([DatasetAccess::class, 'accessEntryComparator'])
+			->uniq([DatasetAccess::class, 'accessEntryComparator']);
 
 		//
 		$this->assertEquals(
@@ -143,39 +103,3 @@ class ConfigExpansionTest extends TestCase
 	}
 }
 
-class ArrayHandler
-{
-	private array $data;
-
-	public function __construct(array &$data)
-	{
-		$this->data = &$data;
-	}
-
-	public function sort(callable $comparer)
-	{
-		\usort($this->data, $comparer);
-
-		return $this;
-	}
-
-	public function uniq(callable $comparer)
-	{
-		$carry = \array_reduce(
-			$this->data,
-			function ($carry, $current) use (&$previous, $comparer)
-			{
-				if ($comparer($previous, $current) !== 0)
-				{
-					$carry[] = $current;
-				}
-				$previous = $current;
-				return $carry;
-			},
-			$initialCarry = []
-		);
-		$this->data = $carry;
-
-		return $this;
-	}
-}

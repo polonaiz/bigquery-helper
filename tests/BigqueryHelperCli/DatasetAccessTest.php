@@ -2,6 +2,7 @@
 
 namespace BigqueryHelperCli;
 
+use jDelta\PrettyJson;
 use PHPUnit\Framework\TestCase;
 
 class DatasetAccessTest extends TestCase
@@ -16,6 +17,7 @@ class DatasetAccessTest extends TestCase
 			[
 				{"role": "WRITER","specialGroup": "projectWriters"},
 				{"role": "OWNER","specialGroup": "projectOwners"},
+				{"role": "OWNER","userByEmail": "tester-001@gmail.com"},
 				{"role": "READER","specialGroup": "projectReaders"}
 			]
 			JSON, true
@@ -25,16 +27,17 @@ class DatasetAccessTest extends TestCase
 			'role' => 'WRITER', 'userByEmail' => 'tester-001@gmail.com'
 		]);
 
-		$this->assertEquals(\json_encode(\json_decode(<<<JSON
+		$this->assertEquals(PrettyJson::getPrettyPrint(<<<JSON
 			[
 				{"role": "WRITER","specialGroup": "projectWriters"},
 				{"role": "OWNER","specialGroup": "projectOwners"},
+				{"role": "OWNER","userByEmail": "tester-001@gmail.com"},
 				{"role": "READER","specialGroup": "projectReaders"},
 				{"role": "WRITER","userByEmail": "tester-001@gmail.com"}
-			]
-			JSON, true)),
-			\json_encode($datasetAccess->toArray())
-		);
+			] 
+			JSON),
+			PrettyJson::getPrettyPrint(\json_encode($datasetAccess->toArray())
+		));
 
 		$datasetAccess->includeAccess([
 			'role' => 'READER', 'userByEmail' => 'tester-002@gmail.com'
@@ -44,6 +47,7 @@ class DatasetAccessTest extends TestCase
 			[
 				{"role": "WRITER","specialGroup": "projectWriters"},
 				{"role": "OWNER","specialGroup": "projectOwners"},
+				{"role": "OWNER","userByEmail": "tester-001@gmail.com"},
 				{"role": "READER","specialGroup": "projectReaders"},
 				{"role": "WRITER","userByEmail": "tester-001@gmail.com"},
 				{"role": "READER","userByEmail": "tester-002@gmail.com"}
@@ -60,6 +64,7 @@ class DatasetAccessTest extends TestCase
 			[
 				{"role": "WRITER","specialGroup": "projectWriters"},
 				{"role": "OWNER","specialGroup": "projectOwners"},
+				{"role": "OWNER","userByEmail": "tester-001@gmail.com"},
 				{"role": "READER","specialGroup": "projectReaders"},
 				{"role": "READER","userByEmail": "tester-002@gmail.com"}
 			]
@@ -73,6 +78,7 @@ class DatasetAccessTest extends TestCase
 		$this->assertEquals(\json_encode(\json_decode(<<<JSON
 			[
 				{"role": "OWNER","specialGroup": "projectOwners"},
+				{"role": "OWNER","userByEmail": "tester-001@gmail.com"},
 				{"role": "READER","specialGroup": "projectReaders"},
 				{"role": "READER","userByEmail": "tester-002@gmail.com"}
 			]
@@ -81,6 +87,16 @@ class DatasetAccessTest extends TestCase
 		);
 
 		$datasetAccess->excludeSpecialGroup();
+		$this->assertEquals(\json_encode(\json_decode(<<<JSON
+			[
+				{"role": "OWNER","userByEmail": "tester-001@gmail.com"},
+				{"role": "READER","userByEmail": "tester-002@gmail.com"}
+			]
+			JSON, true), JSON_PRETTY_PRINT),
+			\json_encode($datasetAccess->toArray(), JSON_PRETTY_PRINT)
+		);
+
+		$datasetAccess->excludeOwner();
 		$this->assertEquals(\json_encode(\json_decode(<<<JSON
 			[
 				{"role": "READER","userByEmail": "tester-002@gmail.com"}

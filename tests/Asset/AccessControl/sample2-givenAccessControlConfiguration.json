@@ -3,13 +3,13 @@
 		{
 			"datasetIdPattern": "/^DATASET_A_.+$/",
 			"access": [
-				{"role": "READER", "groupId": "group-1"}
+				{"role": "READER", "userByCustomGroup": "group-1"}
 			]
 		}
 	],
-	"groups": [
+	"customGroups": [
 		{
-			"groupId": "group-1",
+			"customGroupId": "group-1",
 			"members": [
 				{"userByEmail": "tester-001@gmail.com"},
 				{"userByEmail": "tester-002@gmail.com"}
