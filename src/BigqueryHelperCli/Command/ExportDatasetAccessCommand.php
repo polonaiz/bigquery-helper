@@ -24,8 +24,8 @@ class ExportDatasetAccessCommand implements Command
 	 */
 	public function run()
 	{
-		$projectId = \getenv('BIGQUERY_HELPER_KEY_PROJECT_ID');
-		$keyFilePath = \getenv('BIGQUERY_HELPER_KEY_FILE_PATH');
+		$projectId = $this->config['cliParams']['projectId'] ?? \getenv('BIGQUERY_HELPER_KEY_PROJECT_ID');
+		$keyFilePath = $this->config['cliParams']['credential'] ?? \getenv('BIGQUERY_HELPER_KEY_FILE_PATH');
 		$outputFilePath = $this->config['cliParams']['output'] ?? 'php://stdout';
 
 		$serviceBuilder = new ServiceBuilder([
