@@ -71,6 +71,21 @@ class DatasetAccess
 		return $this;
 	}
 
+	public function excludeView()
+	{
+		$data = [];
+		foreach ($this->data as $datum)
+		{
+			if (isset($datum['view']))
+			{
+				continue;
+			}
+			$data[] = $datum;
+		}
+		$this->data = $data;
+		return $this;
+	}
+
 	public
 	function toArray()
 	{

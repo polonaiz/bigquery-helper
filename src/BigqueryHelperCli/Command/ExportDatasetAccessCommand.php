@@ -45,6 +45,7 @@ class ExportDatasetAccessCommand implements Command
 			$datasetAccess = (new DatasetAccess($datasetInfo['access']))
 				->excludeSpecialGroup()
 				->excludeOwner()
+				->excludeView()
 				->toArray();
 			(new ArrayHandler($datasetAccess))
 				->sort([DatasetAccess::class, 'accessEntryComparator']);
