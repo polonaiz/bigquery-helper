@@ -13,13 +13,18 @@ class DatasetAccessTest extends TestCase
 	 */
 	public function testGrantAccess()
 	{
-		$datasetAccess = new DatasetAccess(\json_decode(<<<JSON
-			[
-				{"role": "WRITER","specialGroup": "projectWriters"},
-				{"role": "OWNER","specialGroup": "projectOwners"},
-				{"role": "OWNER","userByEmail": "tester-001@gmail.com"},
-				{"role": "READER","specialGroup": "projectReaders"}
-			]
+		$datasetAccess = new DatasetAccess(\json_decode(
+			<<<JSON
+			{
+				"datasetId": "TEST_DATASET",
+				"access": [
+					{"role": "WRITER","specialGroup": "projectWriters"},
+					{"role": "OWNER","specialGroup": "projectOwners"},
+					{"role": "OWNER","userByEmail": "tester-001@gmail.com"},
+					{"role": "READER","specialGroup": "projectReaders"},
+					{"view": {"projectId": "test-project", "datasetId": "test-dataset", "tableId": "test-view"}}
+				]
+			}
 			JSON, true
 		));
 
@@ -27,82 +32,139 @@ class DatasetAccessTest extends TestCase
 			'role' => 'WRITER', 'userByEmail' => 'tester-001@gmail.com'
 		]);
 
-		$this->assertEquals(PrettyJson::getPrettyPrint(<<<JSON
-			[
-				{"role": "WRITER","specialGroup": "projectWriters"},
-				{"role": "OWNER","specialGroup": "projectOwners"},
-				{"role": "OWNER","userByEmail": "tester-001@gmail.com"},
-				{"role": "READER","specialGroup": "projectReaders"},
-				{"role": "WRITER","userByEmail": "tester-001@gmail.com"}
-			] 
-			JSON),
-			PrettyJson::getPrettyPrint(\json_encode($datasetAccess->toArray())
-		));
+		$this->assertEquals(
+			PrettyJson::getPrettyPrint(
+				<<<JSON
+				{
+					"datasetId": "TEST_DATASET",
+					"access": [
+						{"role": "WRITER","specialGroup": "projectWriters"},
+						{"role": "OWNER","specialGroup": "projectOwners"},
+						{"role": "OWNER","userByEmail": "tester-001@gmail.com"},
+						{"role": "READER","specialGroup": "projectReaders"},
+						{"view": {"projectId": "test-project", "datasetId": "test-dataset", "tableId": "test-view"}},
+						{"role": "WRITER","userByEmail": "tester-001@gmail.com"}
+					] 
+				}
+				JSON
+			),
+			PrettyJson::getPrettyPrint(\json_encode($datasetAccess->toArray()))
+		);
 
 		$datasetAccess->includeAccess([
 			'role' => 'READER', 'userByEmail' => 'tester-002@gmail.com'
 		]);
 
-		$this->assertEquals(\json_encode(\json_decode(<<<JSON
-			[
-				{"role": "WRITER","specialGroup": "projectWriters"},
-				{"role": "OWNER","specialGroup": "projectOwners"},
-				{"role": "OWNER","userByEmail": "tester-001@gmail.com"},
-				{"role": "READER","specialGroup": "projectReaders"},
-				{"role": "WRITER","userByEmail": "tester-001@gmail.com"},
-				{"role": "READER","userByEmail": "tester-002@gmail.com"}
-			]
-			JSON, true)),
-			\json_encode($datasetAccess->toArray())
+		$this->assertEquals(
+			PrettyJson::getPrettyPrint(
+				<<<JSON
+				{
+					"datasetId": "TEST_DATASET",
+					"access": [
+						{"role": "WRITER","specialGroup": "projectWriters"},
+						{"role": "OWNER","specialGroup": "projectOwners"},
+						{"role": "OWNER","userByEmail": "tester-001@gmail.com"},
+						{"role": "READER","specialGroup": "projectReaders"},
+						{"view": {"projectId": "test-project", "datasetId": "test-dataset", "tableId": "test-view"}},
+						{"role": "WRITER","userByEmail": "tester-001@gmail.com"},
+						{"role": "READER","userByEmail": "tester-002@gmail.com"}
+					]
+				}
+				JSON
+			),
+			PrettyJson::getPrettyPrint(\json_encode($datasetAccess->toArray()))
 		);
 
-		$datasetAccess->excludeAccess([
+		$datasetAccess->excludeAccessEntry([
 			'role' => 'WRITER', 'userByEmail' => 'tester-001@gmail.com'
 		]);
 
-		$this->assertEquals(\json_encode(\json_decode(<<<JSON
-			[
-				{"role": "WRITER","specialGroup": "projectWriters"},
-				{"role": "OWNER","specialGroup": "projectOwners"},
-				{"role": "OWNER","userByEmail": "tester-001@gmail.com"},
-				{"role": "READER","specialGroup": "projectReaders"},
-				{"role": "READER","userByEmail": "tester-002@gmail.com"}
-			]
-			JSON, true), JSON_PRETTY_PRINT),
-			\json_encode($datasetAccess->toArray(), JSON_PRETTY_PRINT)
+		$this->assertEquals(
+			PrettyJson::getPrettyPrint(
+				<<<JSON
+				{
+					"datasetId": "TEST_DATASET",
+					"access": [
+						{"role": "WRITER","specialGroup": "projectWriters"},
+						{"role": "OWNER","specialGroup": "projectOwners"},
+						{"role": "OWNER","userByEmail": "tester-001@gmail.com"},
+						{"role": "READER","specialGroup": "projectReaders"},
+						{"view": {"projectId": "test-project", "datasetId": "test-dataset", "tableId": "test-view"}},
+						{"role": "READER","userByEmail": "tester-002@gmail.com"}
+					]
+				}
+				JSON
+			),
+			PrettyJson::getPrettyPrint(\json_encode($datasetAccess->toArray()))
 		);
 
-		$datasetAccess->excludeAccess([
+		$datasetAccess->excludeAccessEntry([
 			'role' => 'WRITER', 'specialGroup' => 'projectWriters'
 		]);
-		$this->assertEquals(\json_encode(\json_decode(<<<JSON
-			[
-				{"role": "OWNER","specialGroup": "projectOwners"},
-				{"role": "OWNER","userByEmail": "tester-001@gmail.com"},
-				{"role": "READER","specialGroup": "projectReaders"},
-				{"role": "READER","userByEmail": "tester-002@gmail.com"}
-			]
-			JSON, true), JSON_PRETTY_PRINT),
-			\json_encode($datasetAccess->toArray(), JSON_PRETTY_PRINT)
+		$this->assertEquals(
+			PrettyJson::getPrettyPrint(
+				<<<JSON
+				{
+					"datasetId": "TEST_DATASET",
+					"access": [
+						{"role": "OWNER","specialGroup": "projectOwners"},
+						{"role": "OWNER","userByEmail": "tester-001@gmail.com"},
+						{"role": "READER","specialGroup": "projectReaders"},
+						{"view": {"projectId": "test-project", "datasetId": "test-dataset", "tableId": "test-view"}},
+						{"role": "READER","userByEmail": "tester-002@gmail.com"}
+					]
+				}
+				JSON
+			),
+			PrettyJson::getPrettyPrint(\json_encode($datasetAccess->toArray()))
 		);
 
 		$datasetAccess->excludeSpecialGroup();
-		$this->assertEquals(\json_encode(\json_decode(<<<JSON
-			[
-				{"role": "OWNER","userByEmail": "tester-001@gmail.com"},
-				{"role": "READER","userByEmail": "tester-002@gmail.com"}
-			]
-			JSON, true), JSON_PRETTY_PRINT),
-			\json_encode($datasetAccess->toArray(), JSON_PRETTY_PRINT)
+		$this->assertEquals(
+			PrettyJson::getPrettyPrint(
+				<<<JSON
+				{
+					"datasetId": "TEST_DATASET",
+					"access": [
+						{"role": "OWNER","userByEmail": "tester-001@gmail.com"},
+						{"view": {"projectId": "test-project", "datasetId": "test-dataset", "tableId": "test-view"}},
+						{"role": "READER","userByEmail": "tester-002@gmail.com"}
+					]
+				}
+				JSON
+			),
+			PrettyJson::getPrettyPrint(\json_encode($datasetAccess->toArray()))
 		);
 
 		$datasetAccess->excludeOwner();
-		$this->assertEquals(\json_encode(\json_decode(<<<JSON
-			[
-				{"role": "READER","userByEmail": "tester-002@gmail.com"}
-			]
-			JSON, true), JSON_PRETTY_PRINT),
-			\json_encode($datasetAccess->toArray(), JSON_PRETTY_PRINT)
+		$this->assertEquals(
+			PrettyJson::getPrettyPrint(
+				<<<JSON
+				{
+					"datasetId": "TEST_DATASET",
+					"access": [
+						{"view": {"projectId": "test-project", "datasetId": "test-dataset", "tableId": "test-view"}},
+						{"role": "READER","userByEmail": "tester-002@gmail.com"}
+					]
+				}
+				JSON
+			),
+			PrettyJson::getPrettyPrint(\json_encode($datasetAccess->toArray()))
+		);
+
+		$datasetAccess->excludeView();
+		$this->assertEquals(
+			PrettyJson::getPrettyPrint(
+				<<<JSON
+				{
+					"datasetId": "TEST_DATASET",
+					"access": [
+						{"role": "READER","userByEmail": "tester-002@gmail.com"}
+					]
+				}
+				JSON
+			),
+			PrettyJson::getPrettyPrint(\json_encode($datasetAccess->toArray()))
 		);
 	}
 }

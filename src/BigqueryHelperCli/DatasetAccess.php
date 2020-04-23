@@ -22,67 +22,67 @@ class DatasetAccess
 	 */
 	public function includeAccess($entry)
 	{
-		$this->data[] = $entry;
+		$this->data['access'][] = $entry;
 		return $this;
 	}
 
-	public function excludeAccess($entry)
+	public function excludeAccessEntry($entry)
 	{
-		$data = [];
-		foreach ($this->data as $datum)
+		$access = [];
+		foreach ($this->data['access'] as $accessEntry)
 		{
-			if (\json_encode($datum) === \json_encode($entry))
+			if (\json_encode($accessEntry) === \json_encode($entry))
 			{
 				continue;
 			}
-			$data[] = $datum;
+			$access[] = $accessEntry;
 		}
-		$this->data = $data;
+		$this->data['access'] = $access;
 		return $this;
 	}
 
 	public function excludeSpecialGroup()
 	{
-		$data = [];
-		foreach ($this->data as $datum)
+		$access = [];
+		foreach ($this->data['access'] as $accessEntry)
 		{
-			if (isset($datum['specialGroup']))
+			if (isset($accessEntry['specialGroup']))
 			{
 				continue;
 			}
-			$data[] = $datum;
+			$access[] = $accessEntry;
 		}
-		$this->data = $data;
+		$this->data['access'] = $access;
 		return $this;
 	}
 
 	public function excludeOwner()
 	{
-		$data = [];
-		foreach ($this->data as $datum)
+		$access = [];
+		foreach ($this->data['access'] as $accessEntry)
 		{
-			if (isset($datum['role']) && $datum['role'] === 'OWNER')
+			if (isset($accessEntry['role']) && $accessEntry['role'] === 'OWNER')
 			{
 				continue;
 			}
-			$data[] = $datum;
+			$access[] = $accessEntry;
 		}
-		$this->data = $data;
+		$this->data['access'] = $access;
 		return $this;
 	}
 
 	public function excludeView()
 	{
-		$data = [];
-		foreach ($this->data as $datum)
+		$access = [];
+		foreach ($this->data['access'] as $accessEntry)
 		{
-			if (isset($datum['view']))
+			if (isset($accessEntry['view']))
 			{
 				continue;
 			}
-			$data[] = $datum;
+			$access[] = $accessEntry;
 		}
-		$this->data = $data;
+		$this->data['access'] = $access;
 		return $this;
 	}
 
@@ -135,6 +135,9 @@ class DatasetAccess
 				->sort([self::class, 'accessEntryComparator'])
 				->uniq([self::class, 'accessEntryComparator']);
 		}
-		return $result;
+		return [
+			'datasetId' => $datasetId,
+			'access' => $result
+		];
 	}
 }

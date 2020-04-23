@@ -43,11 +43,7 @@ class ExpectDatasetAccessCommand implements Command
 			$datasetId = $datasetRefInfo['datasetReference']['datasetId'];
 
 			$datasetAccess = DatasetAccess::expandConfigDataset($datasetId, $config);
-			$datasetAccessList[] =
-				[
-					'datasetId' => $datasetId,
-					'access' => $datasetAccess
-				];
+			$datasetAccessList[] = $datasetAccess;
 		}
 
 		\file_put_contents(

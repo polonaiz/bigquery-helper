@@ -42,17 +42,16 @@ class ExportDatasetAccessCommand implements Command
 			$datasetId = $datasetRefInfo['datasetReference']['datasetId'];
 
 			$datasetInfo = $bigquery->dataset($datasetId)->info();
-			$datasetAccess = (new DatasetAccess($datasetInfo['access']))
+			$datasetAccess = (new DatasetAccess([
+				'datasetId' => $datasetId,
+				'access' => $datasetInfo['access']]))
 				->excludeSpecialGroup()
 				->excludeOwner()
 				->excludeView()
 				->toArray();
-			(new ArrayHandler($datasetAccess))
+			(new ArrayHandler($datasetAccess['access']))
 				->sort([DatasetAccess::class, 'accessEntryComparator']);
-			$datasetAccessList[] = [
-				'datasetId' => $datasetInfo['datasetReference']['datasetId'],
-				'access' => $datasetAccess
-			];
+			$datasetAccessList[] = $datasetAccess;
 		}
 
 		\file_put_contents(

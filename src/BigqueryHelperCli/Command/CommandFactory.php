@@ -25,6 +25,10 @@ class CommandFactory
 		{
 			return new ExpectDatasetAccessCommand(['cliParams' => $cliParams]);
 		}
+		else if($cliParams[0] === 'diff-dataset-access')
+		{
+			return new DiffDatasetAccessCommand(['cliParams' => $cliParams]);
+		}
 		throw new \Exception("cannot create cli command");
 	}
 }

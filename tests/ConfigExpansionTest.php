@@ -27,7 +27,7 @@ class ConfigExpansionTest extends TestCase
 			$datasetIds = \json_decode(\file_get_contents($testset['datasetIds']), true);
 
 			$result =
-				$this->expandConfig($datasetIds, $accessControlConfiguration);
+				$this->expandConfigDatasetList($datasetIds, $accessControlConfiguration);
 
 			$this->assertEquals(
 				\json_encode(\json_decode(\file_get_contents(
@@ -41,16 +41,15 @@ class ConfigExpansionTest extends TestCase
 	 * @param $accessControlConfiguration array
 	 * @return array
 	 */
-	public function expandConfig($datasetIds, $accessControlConfiguration)
+	public function expandConfigDatasetList($datasetIds, $accessControlConfiguration)
 	{
 		$datasetAccessList = [];
 		foreach ($datasetIds as $datasetId)
 		{
-			$datasetAccessList[] = [
-				'datasetId' => $datasetId,
-				'access' => DatasetAccess::expandConfigDataset(
+			$datasetAccessList[] =
+				DatasetAccess::expandConfigDataset(
 					$datasetId,
-					$accessControlConfiguration)];
+					$accessControlConfiguration);
 		}
 		return $datasetAccessList;
 	}

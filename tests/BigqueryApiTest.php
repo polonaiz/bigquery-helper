@@ -65,7 +65,7 @@ class BigqueryApiTest extends TestCase
 		$revokeUpdateResult = $bigquery->dataset($datasetId)->update($revokeMetaData = [
 			'etag' => $currentDatasetInfo['etag'],
 			'access' => (new DatasetAccess($currentDatasetInfo['access']))
-				->excludeAccess(["role" => "WRITER", "userByEmail" => $testAccount])
+				->excludeAccessEntry(["role" => "WRITER", "userByEmail" => $testAccount])
 				->toArray()
 		]);
 		echo \json_encode(['revokeUpdateResult' => $revokeUpdateResult], JSON_PRETTY_PRINT) . PHP_EOL;
