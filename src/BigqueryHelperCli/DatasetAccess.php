@@ -101,7 +101,7 @@ class DatasetAccess
 	public static
 	function expandConfigDataset($datasetId, $accessControlConfiguration)
 	{
-		$result = [];
+		$access = [];
 
 		// build group dictionary
 		$customGroupDict = [];
@@ -121,7 +121,7 @@ class DatasetAccess
 
 			foreach ($datasetAccessConfig['access'] as $accessEntry)
 			{
-				$result = \array_merge($result, \array_map(
+				$access = \array_merge($access, \array_map(
 					function ($member) use ($accessEntry)
 					{
 						return ['role' => $accessEntry['role']] + ['userByEmail' => $member['userByEmail']];
@@ -130,14 +130,21 @@ class DatasetAccess
 				));
 			}
 			unset($accessEntry);
-
-			(new ArrayHandler($result))
-				->sort([self::class, 'accessEntryComparator'])
-				->uniq([self::class, 'accessEntryComparator']);
 		}
+
+		(new ArrayHandler($access))
+			->sort([self::class, 'accessEntryComparator'])
+			->uniq([self::class, 'accessEntryComparator']);
+
 		return [
 			'datasetId' => $datasetId,
-			'access' => $result
+			'access' => $access
 		];
+	}
+
+	public static
+	function diff($datasetAccessData1, $datasetAccessData2)
+	{
+
 	}
 }
