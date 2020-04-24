@@ -142,9 +142,46 @@ class DatasetAccess
 		];
 	}
 
+	/**
+	 * @param $datasetAccessData1
+	 * @param $datasetAccessData2
+	 * @return array
+	 * @throws \Exception
+	 */
 	public static
 	function diff($datasetAccessData1, $datasetAccessData2)
 	{
+		if ($datasetAccessData1['datasetId'] !== $datasetAccessData2['datasetId'])
+		{
+			throw new \Exception("FAILURE");
+		}
 
+		$datasetAccessPatch = [
+			'datasetId' => $datasetAccessData1['datasetId'],
+			'accessPatchList' => []
+		];
+
+		foreach ($datasetAccessData1['access'] as $accessEntry1)
+		{
+			if ((new ArrayHandler($datasetAccessData2['access']))
+					->exists($accessEntry1, [self::class, 'accessEntryComparator']) == false)
+			{
+				$datasetAccessPatch['accessPatchList'][] = [
+					'type' => '-', 'role' => $accessEntry1['role'], 'userByEmail' => $accessEntry1['userByEmail']
+				];
+			}
+		}
+
+		foreach ($datasetAccessData2['access'] as $accessEntry2)
+		{
+			if ((new ArrayHandler($datasetAccessData1['access']))
+					->exists($accessEntry2, [self::class, 'accessEntryComparator']) == false)
+			{
+				$datasetAccessPatch['accessPatchList'][] = [
+					'type' => '+', 'role' => $accessEntry2['role'], 'userByEmail' => $accessEntry2['userByEmail']
+				];
+			}
+		}
+		return $datasetAccessPatch;
 	}
 }

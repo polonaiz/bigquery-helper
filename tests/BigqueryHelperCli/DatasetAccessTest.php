@@ -167,4 +167,54 @@ class DatasetAccessTest extends TestCase
 			PrettyJson::getPrettyPrint(\json_encode($datasetAccess->toArray()))
 		);
 	}
+
+	/**
+	 * @throws \Exception
+	 */
+	public function testDiff()
+	{
+		$datasetAccessData1 =
+			<<<JSON
+			{
+				"datasetId": "TEST_DATASET_1",
+				"access": [
+					{"role": "WRITER","userByEmail": "tester-001@gmail.com"},
+					{"role": "READER","userByEmail": "tester-002@gmail.com"},
+					{"role": "READER","userByEmail": "tester-003@gmail.com"}
+				]
+			}
+			JSON;
+		$datasetAccessData2 =
+			<<<JSON
+			{
+				"datasetId": "TEST_DATASET_1",
+				"access": [
+					{"role": "READER","userByEmail": "tester-002@gmail.com"},
+					{"role": "WRITER","userByEmail": "tester-003@gmail.com"},
+					{"role": "READER","userByEmail": "tester-004@gmail.com"}
+				]
+			}
+			JSON;
+		$expectedDatasetAccessPatchData =
+			<<<JSON
+			{
+				"datasetId": "TEST_DATASET_1",
+				"accessPatchList": [
+					{"type": "-", "role": "WRITER", "userByEmail": "tester-001@gmail.com"},
+					{"type": "-", "role": "READER", "userByEmail": "tester-003@gmail.com"},
+					{"type": "+", "role": "WRITER", "userByEmail": "tester-003@gmail.com"},
+					{"type": "+", "role": "READER", "userByEmail": "tester-004@gmail.com"}
+				]
+			}
+			JSON;
+
+		$this->assertEquals(
+			PrettyJson::getPrettyPrint($expectedDatasetAccessPatchData),
+			PrettyJson::getPrettyPrint(\json_encode(DatasetAccess::diff(
+				\json_decode($datasetAccessData1, true),
+				\json_decode($datasetAccessData2, true)
+			)))
+		);
+
+	}
 }

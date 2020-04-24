@@ -5,8 +5,6 @@ namespace BigqueryHelperCli\Command;
 
 
 use BigqueryHelperCli\DatasetAccess;
-use Google\Cloud\BigQuery\Dataset;
-use Google\Cloud\Core\ServiceBuilder;
 use jDelta\PrettyJson;
 
 class DiffDatasetAccessCommand implements Command
@@ -23,32 +21,31 @@ class DiffDatasetAccessCommand implements Command
 	 */
 	public function run()
 	{
-		$datasetAccessAsIsList = \json_decode(\file_get_contents($this->config['cliParams']['asIs']), true);
-		$datasetAccessToBeList = \json_decode(\file_get_contents($this->config['cliParams']['toBe']), true);
+		$datasetAccessListCurrent = \json_decode(\file_get_contents($this->config['cliParams']['current']), true);
+		$datasetAccessListExpected = \json_decode(\file_get_contents($this->config['cliParams']['expected']), true);
 		$outputFilePath = $this->config['cliParams']['output'] ?? 'php://stdout';
 
-		$iterAsIs = new \ArrayIterator($datasetAccessAsIsList);
-		$iterToBe = new \ArrayIterator($datasetAccessToBeList);
-		while(
-			($datasetAsIs = $iterAsIs->current()) &&
-			($datasetToBe = $iterToBe->current())
+		$DatasetAccessDiffListData = [];
+		$iterCurrent = new \ArrayIterator($datasetAccessListCurrent);
+		$iterExpected = new \ArrayIterator($datasetAccessListExpected);
+		while (
+			($datasetAccessCurrent = $iterCurrent->current()) &&
+			($datasetAccessExpected = $iterExpected->current())
 		)
 		{
-			$datasetIdAsIs = $datasetAsIs['datasetId'];
-			$datasetIdToBe = $datasetToBe['datasetId'];
-			if($datasetAsIs !== $datasetToBe)
+			$DatasetAccessDiffData =
+				DatasetAccess::diff($datasetAccessCurrent, $datasetAccessExpected);
+			if(count($DatasetAccessDiffData['accessPatchList']) > 0)
 			{
-				throw new \Exception('FAILURE: datasetId differ');
+				$DatasetAccessDiffListData[] = $DatasetAccessDiffData;
 			}
-			echo $datasetIdAsIs . PHP_EOL;
-			echo $datasetIdToBe . PHP_EOL;
 
-			$iterAsIs->next();
-			$iterToBe->next();
+			$iterCurrent->next();
+			$iterExpected->next();
 		}
 
-//		\file_put_contents(
-//			$outputFilePath,
-//			PrettyJson::getPrettyPrint(\json_encode($datasetAccessList)));
+		\file_put_contents(
+			$outputFilePath,
+			PrettyJson::getPrettyPrint(\json_encode($DatasetAccessDiffListData)) . PHP_EOL);
 	}
 }

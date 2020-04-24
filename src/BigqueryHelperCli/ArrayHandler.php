@@ -39,4 +39,16 @@ class ArrayHandler
 
 		return $this;
 	}
+
+	public function exists($needle, callable $comparer)
+	{
+		foreach ($this->data as $datum)
+		{
+			if($comparer($datum, $needle) === 0)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }
