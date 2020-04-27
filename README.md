@@ -39,3 +39,48 @@ diff-dataset-access
 		--credential=credential.json \
 		--diff=datasetAccessDiff.json
 ~~~
+
+* sample-dataset-access
+~~~
+{
+	"datasetAccessConfigList": [
+		{
+			"datasetIdPattern": "/^DATASET_A_.+$/",
+			"access": [
+				{"role": "READER", "userByCustomGroup": "group-1"},
+				{"role": "READER", "userByCustomGroup": "group-2"}
+			]
+		},
+		{
+			"datasetIdPattern": "/^DATASET_B_.+$/",
+			"access": [
+				{"role": "READER", "userByCustomGroup": "group-2"},
+				{"role": "WRITER", "userByCustomGroup": "group-3"}
+			]
+		}
+	],
+	"customGroups": [
+		{
+			"customGroupId": "group-1",
+			"members": [
+				{"userByEmail": "tester-001@gmail.com"},
+				{"userByEmail": "tester-002@gmail.com"}
+			]
+		},
+		{
+			"customGroupId": "group-2",
+			"members": [
+				{"userByEmail": "tester-003@gmail.com"},
+				{"userByEmail": "tester-004@gmail.com"}
+			]
+		},
+		{
+			"customGroupId": "group-3",
+			"members": [
+				{"userByEmail": "tester-004@gmail.com"},
+				{"userByEmail": "tester-005@gmail.com"}
+			]
+		}
+	]
+}
+~~~
