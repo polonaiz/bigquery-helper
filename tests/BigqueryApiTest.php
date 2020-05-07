@@ -7,22 +7,22 @@ use PHPUnit\Framework\TestCase;
 
 class BigqueryApiTest extends TestCase
 {
-	private function getDefaultProjectId()
+	private function discoverDefaultProjectId()
 	{
 		return \getenv('BIGQUERY_HELPER_KEY_PROJECT_ID');
 	}
 
-	private function getDefaultKeyFilePath()
+	private function discoverDefaultKeyFilePath()
 	{
 		return \getenv('BIGQUERY_HELPER_KEY_FILE_PATH');
 	}
 
 	public function testObtainDefaultCredential()
 	{
-		$projectId = $this->getDefaultProjectId();
+		$projectId = $this->discoverDefaultProjectId();
 		$this->assertNotFalse($projectId);
 
-		$keyFilePath = $this->getDefaultKeyFilePath();
+		$keyFilePath = $this->discoverDefaultKeyFilePath();
 		$this->assertNotFalse($keyFilePath);
 		$this->assertTrue(\file_exists($keyFilePath));
 	}
@@ -35,7 +35,7 @@ class BigqueryApiTest extends TestCase
 		$this->markTestSkipped();
 
 		$serviceBuilder = new ServiceBuilder([
-			'keyFilePath' => $this->getDefaultKeyFilePath(),
+			'keyFilePath' => $this->discoverDefaultKeyFilePath(),
 		]);
 		$bigquery = $serviceBuilder->bigQuery();
 		$datasetId = 'zzz_test__BIGQUERY_HELPER';
