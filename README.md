@@ -2,7 +2,7 @@
 
 ### Dataset Permission Manipulation
 
-* overview
+* concept
 ~~~
 diff-dataset-access 
     (export-dataset-access) 
