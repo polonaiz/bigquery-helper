@@ -180,7 +180,8 @@ class DatasetAccessTest extends TestCase
 				"access": [
 					{"role": "WRITER","userByEmail": "tester-001@gmail.com"},
 					{"role": "READER","userByEmail": "tester-002@gmail.com"},
-					{"role": "READER","userByEmail": "tester-003@gmail.com"}
+					{"role": "READER","userByEmail": "tester-003@gmail.com"},
+					{"role": "READER", "iamMember": "deleted:user:tester-000@gmail.com?uid=000000000000000000000"}
 				]
 			}
 			JSON;

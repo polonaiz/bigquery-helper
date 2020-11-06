@@ -166,9 +166,12 @@ class DatasetAccess
 			if ((new ArrayHandler($datasetAccessData2['access']))
 					->exists($accessEntry1, [self::class, 'accessEntryComparator']) == false)
 			{
-				$datasetAccessPatch['accessPatchList'][] = [
-					'type' => '-', 'role' => $accessEntry1['role'], 'userByEmail' => $accessEntry1['userByEmail']
-				];
+				if (isset($accessEntry1['userByEmail']))
+				{
+					$datasetAccessPatch['accessPatchList'][] = [
+						'type' => '-', 'role' => $accessEntry1['role'], 'userByEmail' => $accessEntry1['userByEmail']
+					];
+				}
 			}
 		}
 
